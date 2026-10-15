@@ -60,13 +60,41 @@ h3{font:600 14px Georgia,serif;margin:14px 0 4px}
 @media(min-width:1400px){.wrap{max-width:1280px}}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.hero{grid-template-columns:repeat(3,1fr)}.hero .big{grid-column:1/-1;border-right:0;border-bottom:1px solid var(--line)}}
 @media(max-width:620px){.wrap{padding:12px 12px 48px}.charts{grid-template-columns:1fr}.bar{width:100%}.bar input[type=month]{flex:1}input,select{font-size:16px}button,.btn{padding:10px 12px}h1{font-size:20px}.hero{grid-template-columns:1fr}.hero>div{display:flex;justify-content:space-between;align-items:baseline;border-right:0;border-bottom:1px solid var(--line);padding:10px 4px}.hero .big{display:block}.hero .big b{font-size:28px}.hero b{font-size:18px}thead{display:none}tr{display:grid;grid-template-columns:48px 1fr auto;border-bottom:1px solid var(--line)}td{border:0;padding:8px 6px 4px}td:last-child{grid-column:1/-1;text-align:right;padding-top:0;padding-bottom:8px}.donut svg{margin:0 auto}}
+
+/* Tema, stiker lucu, dan nominal */
+.theme-picker{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+.theme-picker select{width:auto;max-width:220px;border-radius:999px}
+body[data-theme]:not([data-theme="default"]){background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;overflow-x:hidden}
+body[data-theme]:not([data-theme="default"])::before{content:"";position:fixed;inset:0;z-index:-2;background:var(--image,none);background-size:cover;background-position:center}
+body[data-theme]:not([data-theme="default"])::after{content:"";position:fixed;inset:0;z-index:-1;background:var(--overlay);pointer-events:none}
+body[data-theme]:not([data-theme="default"]) .panel{background:var(--panel);backdrop-filter:blur(14px) saturate(1.15);border:2px solid var(--card-border);border-radius:26px;box-shadow:0 14px 40px #0000002b}
+body[data-theme]:not([data-theme="default"]) input,body[data-theme]:not([data-theme="default"]) select,body[data-theme]:not([data-theme="default"]) button{border-radius:14px}
+body[data-theme]:not([data-theme="default"]) button.p{border-radius:999px;box-shadow:0 6px 16px #00000022}
+body[data-theme]:not([data-theme="default"]) h1,body[data-theme]:not([data-theme="default"]) h2{font-family:"Comic Sans MS","Segoe UI",system-ui,sans-serif}
+body[data-theme]:not([data-theme="default"]) .hero{border:2px solid var(--card-border);border-radius:26px;background:var(--panel);backdrop-filter:blur(14px);box-shadow:0 14px 40px #0000002b}
+body[data-theme]:not([data-theme="default"]) .hero>div{border-color:var(--card-border)}
+.sticker-layer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.sticker{position:absolute;opacity:.9;filter:drop-shadow(0 8px 14px #00000030);animation:floaty 7s ease-in-out infinite}
+.sticker:nth-child(2){animation-delay:-2.2s}.sticker:nth-child(3){animation-delay:-4.4s}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+.dino-mascot{position:fixed;right:14px;bottom:14px;width:92px;z-index:5;pointer-events:none;filter:drop-shadow(0 10px 18px #00000038);animation:bob 4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+.amount-hint{display:none}
+@media(max-width:620px){.theme-picker{width:100%}.theme-picker select{flex:1;max-width:none}.dino-mascot{width:70px;right:8px;bottom:8px}.sticker{transform:scale(.72)}}
+
 </style>
 </head>
 <body>
+<div class="sticker-layer" id="stickers" aria-hidden="true"></div>
+<svg class="dino-mascot" id="mascot" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8ed67a"/><stop offset="1" stop-color="#4f9a49"/></linearGradient></defs><ellipse cx="62" cy="72" rx="38" ry="32" fill="url(#dg)"/><ellipse cx="42" cy="49" rx="30" ry="27" fill="url(#dg)"/><circle cx="34" cy="45" r="5" fill="#fff"/><circle cx="35.5" cy="45.5" r="2.6" fill="#20351f"/><circle cx="49" cy="45" r="5" fill="#fff"/><circle cx="50.5" cy="45.5" r="2.6" fill="#20351f"/><ellipse cx="42" cy="56" rx="7" ry="5" fill="#20351f"/><ellipse cx="42" cy="54" rx="4" ry="2.5" fill="#ff9db0"/><path d="M92 68c14-3 20 6 14 15-5 8-16 7-20 1" fill="#4f9a49"/><circle cx="55" cy="35" r="9" fill="#7cc86d"/><circle cx="27" cy="34" r="8" fill="#7cc86d"/><path d="M48 104c0 6 4 9 9 9s9-3 9-9" fill="#4f9a49"/><path d="M65 104c0 6 4 9 9 9s9-3 9-9" fill="#4f9a49"/></svg>
 <div class="wrap">
 <header>
   <h1>Financial Tracker</h1>
   <div class="bar">
+    <label class="theme-picker">Tema<select id="theme" aria-label="Pilih tema">
+<option value="default">Warna biasa</option><option value="blue">Biru</option><option value="green">Hijau</option><option value="purple">Ungu</option><option value="dark">Gelap</option>
+<option value="dino">Dino</option><option value="sea">Sea</option><option value="gemini">Gemini</option><option value="pisces">Pisces</option>
+</select></label>
     <input type="month" id="m" aria-label="Pilih bulan">
     <button id="lg" class="p" hidden>Masuk dengan Google</button><span id="us" style="color:var(--mute);font-size:13px"></span>
     <button id="csv">Ekspor CSV</button>
@@ -85,7 +113,7 @@ h3{font:600 14px Georgia,serif;margin:14px 0 4px}
         <label>Tipe<select id="t"><option value="out">Pengeluaran</option><option value="in">Pemasukan</option></select></label>
         <label>Tanggal<input type="date" id="d" required></label>
       </div>
-      <label>Nominal (Rp)<input type="number" id="a" min="1" step="any" inputmode="decimal" required></label>
+      <label>Nominal (Rp)<input type="text" id="a" inputmode="decimal" autocomplete="off" placeholder="1.000.000" required></label>
       <label>Kategori<input id="c" list="cl" required placeholder="Pilih atau ketik baru"></label>
       <label>Akun<input id="ac" list="al" required placeholder="Tunai, Bank, E-Wallet..."></label>
       <label>Catatan<input id="n" placeholder="Opsional"></label>
@@ -183,12 +211,86 @@ function listen(){
 $('#lg').onclick=()=>fu?firebase.auth().signOut():firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert('Login gagal: '+e.code));
 let ed=null;
 
+function formatAmount(value){
+  const clean=String(value).replace(/[^0-9,]/g,'');
+  if(!clean)return '';
+  const p=clean.split(','),i=p[0].replace(/^0+(?=\d)/,'')||'0';
+  return i.replace(/\B(?=(\d{3})+(?!\d))/g,'.')+(p.length>1?','+p.slice(1).join(''):'');
+}
+function parseAmount(v){return Number(String(v).replace(/\./g,'').replace(',','.'))}
+function storedAmount(v){return Number(v).toLocaleString('id-ID',{useGrouping:true,maximumFractionDigits:20})}
+const amountInput=$('#a');
+amountInput.addEventListener('input',()=>{
+  const raw=amountInput.value,pos=amountInput.selectionStart??raw.length;
+  const right=raw.slice(pos).replace(/[^0-9,]/g,'').length;
+  const formatted=formatAmount(raw);amountInput.value=formatted;
+  let caret=formatted.length,rem=right;
+  while(caret>0&&rem>0){caret--;if(/[0-9,]/.test(formatted[caret]))rem--}
+  amountInput.setSelectionRange(caret,caret);
+  const n=parseAmount(formatted);
+  amountInput.setCustomValidity(formatted&&(!Number.isFinite(n)||n<=0)?'Nominal harus lebih dari 0.':'');
+});
+amountInput.addEventListener('keydown',e=>{
+  if(e.key==='Backspace'&&amountInput.selectionStart===amountInput.selectionEnd){
+    const p=amountInput.selectionStart;
+    if(p>0&&amountInput.value[p-1]==='.')amountInput.setSelectionRange(p-1,p-1);
+  }
+  if(e.key==='Delete'&&amountInput.selectionStart===amountInput.selectionEnd){
+    const p=amountInput.selectionStart;
+    if(amountInput.value[p]==='.')amountInput.setSelectionRange(p+1,p+1);
+  }
+});
+const EMOJI={
+  dino:['🦕','🦖','🌿','🍃','🥚'],
+  sea:['🐠','🐬','🦈','🐚','🌊','⭐'],
+  gemini:['♊','⭐','✨','🌙','💫'],
+  pisces:['♓','🐟','🐠','✨','🌙','💫']
+};
+const THEMES={
+  default:null,
+  blue:{colors:['#eef4ff','#ffffff','#172b4d','#506480','#cbd9ef','#285cb8','#087957','#bd334c'],scheme:'light'},
+  green:{colors:['#eff8f0','#ffffff','#183c29','#526b5c','#c9dfcf','#287347','#087957','#be3451'],scheme:'light'},
+  purple:{colors:['#f3effc','#ffffff','#352249','#706080','#dcd0ef','#7944b2','#087957','#bd334c'],scheme:'light'},
+  dark:{colors:['#0c121c','#141d2b','#e7edf5','#a5b2c5','#34465c','#8fa2ff','#3fc89f','#ff7b8f'],scheme:'dark',button:'#10182b'},
+  dino:{colors:['#f5fbef','#ffffff','#24432d','#5a7350','#c7ddb8','#3f7c31','#197047','#b13742'],image:'https://i.pinimg.com/736x/e1/d1/2e/e1d12e870aa55146258a25c15bcd7c19.jpg',overlay:'linear-gradient(180deg,#f5fbefdd,#ffffffe6 60%,#f5fbefee)',card:'rgba(255,255,255,.82)',border:'#8fbb78',button:'#3f7c31',mascot:true},
+  sea:{colors:['#eaf8fd','#ffffff','#123f56','#4c7183','#b7dfe9','#087b97','#11724e','#b53250'],image:'https://i.pinimg.com/736x/d0/05/cd/d005cdda4a1088e5db620b685981a18f.jpg',overlay:'linear-gradient(180deg,#eaf8fddd,#ffffffe6 60%,#eaf8fdee)',card:'rgba(255,255,255,.82)',border:'#7fc6da',button:'#087b97'},
+  gemini:{colors:['#fff9e8','#ffffff','#514124','#82704d','#ead8ac','#93691a','#11724e','#b53250'],image:'https://i.pinimg.com/736x/e6/96/f5/e696f54173a224d960624b669a380a23.jpg',overlay:'linear-gradient(180deg,#fff9e8dd,#ffffffe6 60%,#fff9e8ee)',card:'rgba(255,255,255,.82)',border:'#d8b868',button:'#93691a'},
+  pisces:{colors:['#f0f2ff','#ffffff','#343967','#666b91','#d0d3f0','#6265b5','#11724e','#b53250'],image:'https://i.pinimg.com/736x/69/19/0e/69190eb90f32f662b83f692d404b106d.jpg',overlay:'linear-gradient(180deg,#f0f2ffdd,#ffffffe6 60%,#f0f2ffee)',card:'rgba(255,255,255,.82)',border:'#a6abdc',button:'#6265b5'}
+};
+function applyTheme(key){
+  if(!Object.prototype.hasOwnProperty.call(THEMES,key))key='default';
+  const t=THEMES[key],root=document.documentElement;
+  const vars=['--bg','--panel','--ink','--mute','--line','--acc','--in','--out'];
+  [...vars,'--image','--overlay','--card-border','--button-ink'].forEach(v=>root.style.removeProperty(v));
+  root.style.removeProperty('color-scheme');
+  document.body.dataset.theme=key;$('#theme').value=key;
+  $('#stickers').innerHTML='';$('#mascot').style.display='none';
+  if(t){
+    vars.forEach((v,i)=>root.style.setProperty(v,t.colors[i]));
+    root.style.colorScheme=t.scheme||'light';
+    root.style.setProperty('--button-ink',t.button||'#ffffff');
+    root.style.setProperty('--image',t.image?`url("${t.image}")`:'none');
+    root.style.setProperty('--overlay',t.overlay||'transparent');
+    root.style.setProperty('--card-border',t.border||'var(--line)');
+    if(t.mascot)$('#mascot').style.display='block';
+    (EMOJI[key]||[]).forEach((e,i)=>{
+      const el=document.createElement('div');el.className='sticker';el.textContent=e;
+      el.style.cssText=`left:${[4,72,36][i%3]}%;top:${[12,58,82][i%3]}%;font-size:${[42,36,48][i%3]}px`;
+      $('#stickers').appendChild(el);
+    });
+  }
+}
+let preferredTheme='default';try{preferredTheme=localStorage.getItem('ft-theme')||'default'}catch(e){}
+applyTheme(preferredTheme);
+$('#theme').addEventListener('change',e=>{applyTheme(e.target.value);try{localStorage.setItem('ft-theme',e.target.value)}catch(e){}});
+
+
 function lists(){
   const t=$('#t').value;
   $('#cl').innerHTML=S.cats.filter(x=>x.t===t).map(x=>x.n).map(c=>`<option value="${esc(c)}">`).join('');
   $('#al').innerHTML=uniq([...DA,...S.tx.map(x=>x.ac)]).map(c=>`<option value="${esc(c)}">`).join('');
 }
-function reset(){ed=null;$('#f').reset();$('#d').value=today();$('#sb').textContent='Simpan transaksi';$('#ft').textContent='Transaksi baru';$('#cx').hidden=true;lists()}
+function reset(){ed=null;$('#f').reset();$('#a').setCustomValidity('');$('#d').value=today();$('#sb').textContent='Simpan transaksi';$('#ft').textContent='Transaksi baru';$('#cx').hidden=true;lists()}
 
 const sum=(a,t)=>a.filter(x=>x.t===t).reduce((s,x)=>s+x.a,0);
 
@@ -230,8 +332,8 @@ function render(){
 
 $('#f').onsubmit=e=>{
   e.preventDefault();
-  const o={d:$('#d').value,t:$('#t').value,a:+$('#a').value,c:$('#c').value.trim(),ac:$('#ac').value.trim(),n:$('#n').value.trim()};
-  if(!(o.a>0)||!o.c||!o.ac||!o.d)return;
+  const o={d:$('#d').value,t:$('#t').value,a:parseAmount($('#a').value),c:$('#c').value.trim(),ac:$('#ac').value.trim(),n:$('#n').value.trim()};
+  if(!Number.isFinite(o.a)||!(o.a>0)||!o.c||!o.ac||!o.d)return;
   ensureCat(o.t,o.c);
   if(ed)Object.assign(S.tx.find(x=>x.id===ed),o);else S.tx.push({id:Date.now(),...o});
   save();$('#m').value=ym(o.d);reset();render();
@@ -244,7 +346,7 @@ $('#tb').onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
   const id=+b.dataset.id,x=S.tx.find(y=>y.id===id);
   if(b.dataset.a==='del'){if(confirm('Hapus transaksi ini?')){S.tx=S.tx.filter(y=>y.id!==id);save();if(ed===id)reset();render()}}
-  else{ed=id;$('#t').value=x.t;lists();$('#d').value=x.d;$('#a').value=x.a;$('#c').value=x.c;$('#ac').value=x.ac;$('#n').value=x.n;$('#sb').textContent='Update transaksi';$('#ft').textContent='Edit transaksi';$('#cx').hidden=false;scrollTo(0,0)}
+  else{ed=id;$('#t').value=x.t;lists();$('#d').value=x.d;$('#a').value=storedAmount(x.a);$('#a').setCustomValidity('');$('#c').value=x.c;$('#ac').value=x.ac;$('#n').value=x.n;$('#sb').textContent='Update transaksi';$('#ft').textContent='Edit transaksi';$('#cx').hidden=false;scrollTo(0,0)}
 };
 
 function dl(name,type,data){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e3)}
