@@ -275,7 +275,13 @@ function listen(){
     const r=snap.data();if(r.u===S.u)return;
     const rd=JSON.parse(r.data),first=!syn;syn=true;
     let use=first||r.u>S.u;
-    if(first&&S.tx.length)use=rd.tx.length?confirm('Di cloud ada '+rd.tx.length+' transaksi, di perangkat ini '+S.tx.length+'.\nOK = pakai data cloud\nBatal = timpa cloud dengan data perangkat ini'):false;
+    if(first&&S.tx.length){
+      const m=rd;m.tx=[...rd.tx,...S.tx.filter(x=>!rd.tx.some(y=>y.id===x.id))];
+      m.cats=m.cats||[];(S.cats||[]).forEach(c=>{if(!m.cats.some(y=>y.t===c.t&&y.n===c.n))m.cats.push(c)});
+      m.logo=m.logo||S.logo;m.appName=m.appName||S.appName;
+      S=m;S.u=Date.now();initCats();try{localStorage.setItem('ft1',JSON.stringify(S))}catch(e){}
+      lists();render();push();st((fu.displayName||fu.email)+' · tersinkron');return;
+    }
     if(!use){if(first)push();return}
     S=rd;initCats();try{localStorage.setItem('ft1',JSON.stringify(S))}catch(e){}
     lists();render();st((fu.displayName||fu.email)+' · tersinkron');
